@@ -33,14 +33,14 @@ var isArray = function (x) {
 
 var _anyIfArray = function (x, f) {
   if (isArray(x))
-    return _.any(x, f);
+    return _.some(x, f);
   return f(x);
 };
 
 var _anyIfArrayPlus = function (x, f) {
   if (f(x))
     return true;
-  return isArray(x) && _.any(x, f);
+  return isArray(x) && _.some(x, f);
 };
 
 var hasOperators = function(valueSelector) {
@@ -105,7 +105,7 @@ var compileValueSelector = function (valueSelector) {
         operand, valueSelector.$options));
     });
     return function (value) {
-      return _.all(operatorFunctions, function (f) {
+      return _.every(operatorFunctions, function (f) {
         return f(value);
       });
     };
@@ -128,7 +128,7 @@ var LOGICAL_OPERATORS = {
     var subSelectorFunctions = _.map(
       subSelector, compileDocumentSelector);
     return function (doc) {
-      return _.all(subSelectorFunctions, function (f) {
+      return _.every(subSelectorFunctions, function (f) {
         return f(doc);
       });
     };
@@ -140,7 +140,7 @@ var LOGICAL_OPERATORS = {
     var subSelectorFunctions = _.map(
       subSelector, compileDocumentSelector);
     return function (doc) {
-      return _.any(subSelectorFunctions, function (f) {
+      return _.some(subSelectorFunctions, function (f) {
         return f(doc);
       });
     };
@@ -152,7 +152,7 @@ var LOGICAL_OPERATORS = {
     var subSelectorFunctions = _.map(
       subSelector, compileDocumentSelector);
     return function (doc) {
-      return _.all(subSelectorFunctions, function (f) {
+      return _.every(subSelectorFunctions, function (f) {
         return !f(doc);
       });
     };
@@ -174,7 +174,7 @@ var VALUE_OPERATORS = {
       throw new Error("Argument to $in must be array");
     return function (value) {
       return _anyIfArrayPlus(value, function (x) {
-        return _.any(operand, function (operandElt) {
+        return _.some(operand, function (operandElt) {
           return LocalCollection._f._equal(operandElt, x);
         });
       });
@@ -187,8 +187,8 @@ var VALUE_OPERATORS = {
     return function (value) {
       if (!isArray(value))
         return false;
-      return _.all(operand, function (operandElt) {
-        return _.any(value, function (valueElt) {
+      return _.every(operand, function (operandElt) {
+        return _.some(value, function (valueElt) {
           return LocalCollection._f._equal(operandElt, valueElt);
         });
       });
@@ -318,7 +318,7 @@ var VALUE_OPERATORS = {
     return function (value) {
       if (!isArray(value))
         return false;
-      return _.any(value, function (x) {
+      return _.some(value, function (x) {
         return matcher(x);
       });
     };
@@ -594,14 +594,14 @@ var compileDocumentSelector = function (docSelector) {
         // We apply the selector to each "branched" value and return true if any
         // match. This isn't 100% consistent with MongoDB; eg, see:
         // https://jira.mongodb.org/browse/SERVER-8585
-        return _.any(branchValues, valueSelectorFunc);
+        return _.some(branchValues, valueSelectorFunc);
       });
     }
   });
 
 
   return function (doc) {
-    return _.all(perKeySelectors, function (f) {
+    return _.every(perKeySelectors, function (f) {
       return f(doc);
     });
   };
