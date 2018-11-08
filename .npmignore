@@ -1,2 +1,11 @@
-node_modules
-test/browserified.js
+.editorconfig
+examples
+gulpfile.js
+README.md
+src
+test
+tsconfig.json
+.git
+.gitignore
+.gitattributes
+*.tgz

@@ -1,6 +1,6 @@
 {
   "name": "@webantic/minimongo-cache",
-  "version": "0.0.49",
+  "version": "0.0.51",
   "description": "Fork of minimongo designed for caching",
   "main": "index.js",
   "scripts": {
